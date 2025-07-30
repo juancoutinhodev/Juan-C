@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Juan Coutinho - Desenvolvedor Fullstack</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Playfair+Display:wght@900&family=Roboto+Mono:wght@500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+    <script src="https://unpkg.com/lenis@1.1.2/dist/lenis.min.js"></script>
+
+   <style>
+    @import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css");
+    /* --- Configurações Globais e Variáveis --- */
+    :root {
+        --bg-dark: #111111;
+        --bg-dark-gradient: #1a1a1a;
+        --text-dark: #cccccc;
+        --text-heading-dark: #ffffff;
+        --accent-start: #4ade80; /* Verde */
+        --accent-end: #3b82f6;  /* Azul */
+        --whatsapp-green: #25D366;
+        --nav-link-dark: #888888;
+        --nav-active-dark: #ffffff;
+        --border-color: #222222;
+        --card-bg: #161616;
+    }
+
+    /* --- Reset e Configurações Globais --- */
+    *, *::before, *::after { box-sizing: border-box; }
+    html.lenis { height: auto; }
+    .lenis.lenis-smooth { scroll-behavior: auto !important; }
+    .lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
+    .lenis.lenis-stopped { overflow: hidden; }
+    body.nav-open, body.lightbox-open { overflow: hidden; }
+
+    body {
+        background-color: var(--bg-dark);
+        background-image: radial-gradient(circle at top, var(--bg-dark-gradient), var(--bg-dark));
+        color: var(--text-dark);
+        font-family: var(--font-sans);
+        margin: 0;
+        font-size: 16px;
+        -webkit-font-smoothing: antialiased;
+        text-rendering: optimizeLegibility;
+    }
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 2rem; }
+    section { padding: 6rem 0; }
+    .section-title {
+        color: var(--text-heading-dark); font-size: 2rem; margin-bottom: 3rem;
+        font-family: var(--font-serif); font-weight: 900;
+        text-align: center;
+    }
+
+    /* --- Animações de Rolagem --- */
+    .reveal-on-scroll {
+        opacity: 0;
+        transform: translateY(30px);
+        transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        will-change: opacity, transform;
+    }
+    .reveal-on-scroll.is-visible { opacity: 1; transform: translateY(0); }
+    
+    /* --- Header e Navegação --- */
+    header {
+        padding: 1.5rem 0; position: sticky; top: 0; z-index: 1000;
+        background: rgba(17, 17, 17, 0.7);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border-bottom: 1px solid transparent;
+        transition: border-color 0.3s ease;
+    }
+    nav { display: flex; justify-content: space-between; align-items: center; }
+    .nav-brand {
+        display: flex; align-items: center; gap: 0.75rem;
+        color: var(--text-heading-dark); text-decoration: none;
+        transition: filter 0.3s ease; z-index: 1001;
+    }
+    .nav-brand:hover { filter: brightness(1.2); }
+    .nav-brand span { font-weight: 700; font-size: 1.1rem; }
+    .profile-pic { width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--border-color); }
+    .verified-icon { width: 18px; height: 18px; color: #1DA1F2; vertical-align: middle; margin-left: 0.25rem;}
+    .nav-links { list-style: none; display: flex; flex-wrap: wrap; gap: 2.5rem; margin: 0; padding: 0; font-family: var(--font-mono); font-size: 0.9rem; }
+    .nav-links a { color: var(--nav-link-dark); text-decoration: none; transition: color 0.2s ease; position: relative; padding-bottom: 4px; }
+    .nav-links a::after {
+        content: ''; position: absolute; bottom: 0; left: 0;
+        width: 0; height: 2px;
+        background: linear-gradient(to right, var(--accent-start), var(--accent-end));
+        transition: width 0.3s ease;
+    }
+    .nav-links a:hover, .nav-links a.active { color: var(--nav-active-dark); }
+    .nav-links a:hover::after, .nav-links a.active::after { width: 100%; }
+    .nav-links a span {
+        margin-right: 0.5rem;
+        background: linear-gradient(to right, var(--accent-start), var(--accent-end));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        font-weight: 700;
+    }
+    .nav-toggle { display: none; background: none; border: none; padding: 0; width: 30px; height: 30px; cursor: pointer; z-index: 1001; }
+    .nav-toggle .icon-menu, .nav-toggle .icon-close { color: var(--text-heading-dark); width: 100%; height: 100%; }
+    .nav-toggle .icon-close { display: none; }
+
+    /* --- Seção Home (Principal) --- */
+    #home { min-height: 90vh; display: flex; align-items: center; justify-content: space-between; gap: 4rem; }
+    .home-text { flex: 1; max-width: 650px; }
+    .pre-title { font-family: var(--font-mono); font-weight: 500; font-size: 1rem; letter-spacing: 1px; background: linear-gradient(to right, var(--accent-start), var(--accent-end)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    #home h1 { font-family: var(--font-serif); color: var(--text-heading-dark); font-size: clamp(3rem, 7vw, 5.2rem); margin: 0.5rem 0 0 0; font-weight: 900; line-height: 1.1; background: -webkit-linear-gradient(45deg, #ffffff, #d1d1d1); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .description { font-size: 1.15rem; line-height: 1.7; max-width: 650px; margin: 2rem 0 2.5rem 0; }
+    .cta-buttons { display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; }
+    .cta-btn { display: inline-flex; align-items: center; gap: 0.75rem; padding: 0.8rem 1.6rem; border-radius: 8px; text-decoration: none; font-family: var(--font-mono); font-weight: 500; color: var(--text-heading-dark); background-color: var(--border-color); border: 1px solid #333; transition: all 0.3s ease; }
+    .cta-btn svg { width: 20px; height: 20px; }
+    .cta-btn:hover { transform: translateY(-3px); box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); border-color: #555; }
+    .cta-btn-primary { background: linear-gradient(to right, var(--accent-start), var(--accent-end)); color: #000; border: none; box-shadow: 0 4px 15px rgba(74, 222, 128, 0.2); }
+    .cta-btn-primary:hover { filter: brightness(1.1); box-shadow: 0 6px 20px rgba(59, 130, 246, 0.3); }
+
+    /* Estilos para a foto estilizada */
+    .home-photo-container { position: relative; flex-shrink: 0; }
+    .home-photo { width: 320px; height: 320px; border-radius: 50%; object-fit: cover; border: 4px solid transparent; background: linear-gradient(var(--bg-dark), var(--bg-dark)) padding-box, linear-gradient(45deg, var(--accent-start), var(--accent-end)) border-box; animation: rotate-gradient 5s linear infinite; box-shadow: 0 10px 40px rgba(0,0,0,0.5); }
+    @keyframes rotate-gradient { 0% { background-image: linear-gradient(45deg, var(--accent-start), var(--accent-end)); } 50% { background-image: linear-gradient(45deg, var(--accent-end), var(--accent-start)); } 100% { background-image: linear-gradient(45deg, var(--accent-start), var(--accent-end)); } }
+
+    /* --- Seção de Projetos --- */
+    .project-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 2rem; }
+    .project-card { position: relative; display: flex; flex-direction: column; justify-content: flex-end; height: 350px; padding: 1.5rem; border-radius: 12px; background-size: cover; background-position: center; color: white; text-decoration: none; overflow: hidden; transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); border: 1px solid var(--border-color); }
+    .project-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(to top, rgba(0,0,0,0.95) 20%, rgba(0,0,0,0) 80%); border-radius: 12px; transition: opacity 0.4s ease; }
+    .project-card:hover { transform: translateY(-10px); box-shadow: 0 15px 30px rgba(0,0,0,0.5); }
+    
+    /* ✨ CONTEÚDO DO CARD SEMPRE VISÍVEL ✨ */
+    .card-content { 
+        position: relative; 
+        z-index: 2; 
+        opacity: 1; /* Sempre visível */
+        transform: translateY(0); /* Posição normal */
+    }
+    .card-content h3 { font-size: 1.75rem; font-weight: 700; line-height: 1.2; margin: 0 0 0.5rem 0; text-shadow: 1px 1px 5px rgba(0,0,0,0.8); }
+    .card-tech { font-family: var(--font-mono); font-size: 0.9rem; color: #ddd; margin-bottom: 1rem; }
+    
+    .card-buttons { display: flex; gap: 0.75rem; align-items: center; }
+    .card-btn { display: inline-flex; align-items: center; justify-content: center; text-decoration: none; padding: 0.5rem 1rem; background: rgba(255, 255, 255, 0.1); color: #fff; border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 6px; font-family: var(--font-mono); font-size: 0.85rem; transition: all 0.2s ease; gap: 0.5rem; }
+    .card-btn:hover { background: rgba(255, 255, 255, 0.2); border-color: rgba(255, 255, 255, 0.4); }
+    .card-btn svg { width: 16px; height: 16px; }
+
+    /* ✨ BOTÃO DE VISUALIZAÇÃO SEMPRE VISÍVEL ✨ */
+    .card-view-btn { 
+        position: absolute; 
+        top: 1rem; right: 1rem; 
+        z-index: 3; background: rgba(17, 17, 17, 0.5); 
+        backdrop-filter: blur(5px); 
+        border: 1px solid rgba(255,255,255,0.1); 
+        color: #fff; width: 40px; height: 40px; 
+        border-radius: 50%; 
+        cursor: pointer; 
+        display: flex; align-items: center; justify-content: center; 
+        transition: all 0.3s ease; 
+        opacity: 1; /* Sempre visível */
+        transform: scale(1); /* Posição normal */
+    }
+    .card-view-btn:hover { background: rgba(17, 17, 17, 0.8); transform: scale(1.1) translateY(-2px); } /* Efeito de hover mantido */
+
+    .see-all { display: block; margin-top: 3rem; color: var(--text-dark); text-decoration: none; font-weight: 500; font-family: var(--font-mono); padding: 0.75rem 1.5rem; border: 1px solid var(--border-color); border-radius: 8px; transition: all 0.3s ease; text-align: center; max-width: 400px; margin-left: auto; margin-right: auto; }
+    .see-all:hover { color: var(--nav-active-dark); background-color: var(--border-color); border-color: var(--nav-link-dark); transform: translateY(-2px); }
+
+    /* Lightbox */
+    .lightbox { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.85); z-index: 9999; display: flex; align-items: center; justify-content: center; opacity: 0; visibility: hidden; transition: opacity 0.3s ease, visibility 0.3s ease; backdrop-filter: blur(8px); }
+    .lightbox.visible { opacity: 1; visibility: visible; }
+    .lightbox img { max-width: 90%; max-height: 80%; object-fit: contain; border-radius: 8px; box-shadow: 0 10px 40px rgba(0,0,0,0.5); }
+    .lightbox-close { position: absolute; top: 20px; right: 30px; font-size: 48px; color: #fff; text-decoration: none; cursor: pointer; line-height: 1; }
+
+    /* --- Seção de Experiência e outras --- */
+    .experience-list { max-width: 800px; margin: 0 auto; }
+    .experience-item { position: relative; padding: 1.5rem 0 1.5rem 2.5rem; border-left: 2px solid var(--border-color); }
+    .experience-item:last-child { border-left: 2px solid transparent; }
+    .experience-item::before { content: ''; position: absolute; left: -9px; top: 2.2rem; width: 16px; height: 16px; border-radius: 50%; background: var(--border-color); border: 3px solid var(--bg-dark); transition: background 0.3s ease; }
+    .experience-item.is-visible::before { background: linear-gradient(to right, var(--accent-start), var(--accent-end)); }
+    .experience-header h3 { font-size: 1.5rem; color: var(--text-heading-dark); margin: 0 0 0.25rem 0; }
+    .experience-meta { font-size: 1rem; color: var(--nav-link-dark); margin: 0; font-weight: 500; }
+    .experience-dates { font-family: var(--font-mono); color: var(--accent-start); font-size: 0.9rem; margin-bottom: 1rem; }
+    .experience-description ul { list-style: none; padding-left: 0; margin: 0; }
+    .experience-description li { margin-bottom: 0.75rem; line-height: 1.6; padding-left: 1.5rem; position: relative; }
+    .experience-description li::before { content: '→'; position: absolute; left: 0; background: linear-gradient(to right, var(--accent-start), var(--accent-end)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .experience-techs { margin-top: 1rem; display: flex; flex-wrap: wrap; gap: 0.5rem; }
+    .experience-techs span { font-family: var(--font-mono); font-size: 0.8rem; color: var(--accent-start); background-color: rgba(74, 222, 128, 0.1); padding: 0.25rem 0.5rem; border-radius: 4px; }
+    .education-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; max-width: 1000px; margin: 0 auto; }
+    .education-column h3 { font-family: var(--font-serif); font-size: 1.75rem; margin-bottom: 1.5rem; color: var(--text-heading-dark); padding-bottom: 0.5rem; border-bottom: 2px solid var(--border-color); }
+    .education-item { background-color: var(--card-bg); padding: 1.5rem; border-radius: 8px; border: 1px solid var(--border-color); margin-bottom: 1rem; }
+    .education-item h4 { margin: 0 0 0.25rem 0; font-size: 1.1rem; color: var(--text-heading-dark); }
+    .education-item .institution, .education-item .credential { margin: 0; color: var(--nav-link-dark); font-family: var(--font-mono); font-size: 0.9rem; margin-top: 0.5rem; }
+    .education-item .credential { word-break: break-all; }
+    .education-item .description { font-size: 0.9rem; color: var(--text-dark); line-height: 1.5; margin-top: 1rem; }
+    #recommendations { padding-bottom: 0; }
+    .recommendation-card { background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 2rem; max-width: 800px; margin: 0 auto; }
+    .recommendation-card blockquote { margin: 0; font-size: 1.1rem; line-height: 1.7; font-style: normal; border-left: 3px solid var(--accent-start); padding-left: 1.5rem; }
+    .recommendation-author { margin-top: 1.5rem; text-align: right; font-weight: 700; color: var(--text-heading-dark); }
+    .recommendation-author span { display: block; font-weight: 400; font-style: normal; color: var(--nav-link-dark); font-size: 0.9rem; }
+    footer { padding: 4rem 0; margin-top: 6rem; border-top: 1px solid var(--border-color); }
+    .footer-content { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 2rem; font-size: 0.95rem; line-height: 1.6; }
+    .footer-content p { margin: 0 0 1rem 0; }
+    .footer-content strong { color: var(--text-heading-dark); display: block; margin-bottom: 0.75rem; font-family: var(--font-mono); font-size: 1rem; }
+    .footer-content a { color: var(--text-dark); text-decoration: none; transition: color 0.3s ease; }
+    .footer-content a:hover { color: var(--accent-start); }
+    .fab { position: fixed; bottom: 20px; width: 50px; height: 50px; border-radius: 50%; color: white; display: flex; align-items: center; justify-content: center; text-decoration: none; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4); transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease; z-index: 100; }
+    .fab:hover { transform: scale(1.1); filter: brightness(1.1); }
+    #back-to-top-btn { right: 20px; background: linear-gradient(45deg, var(--accent-start), var(--accent-end)); opacity: 0; visibility: hidden; }
+    #back-to-top-btn.visible { opacity: 1; visibility: visible; }
+    #whatsapp-fab { left: 20px; background-color: var(--whatsapp-green); }
+
+    /* --- Media Queries --- */
+    @media (max-width: 992px) {
+        .nav-toggle { display: block; }
+        .nav-links { position: fixed; top: 0; right: -100%; width: 100%; height: 100vh; background-color: var(--bg-dark); flex-direction: column; justify-content: center; align-items: center; gap: 2rem; transition: right 0.5s cubic-bezier(0.77, 0, 0.175, 1); font-size: 1.5rem; }
+        body.nav-open .nav-links { right: 0; }
+        body.nav-open .nav-toggle .icon-menu { display: none; }
+        body.nav-open .nav-toggle .icon-close { display: block; }
+        #home { flex-direction: column-reverse; text-align: center; padding-top: 6rem; }
+        .cta-buttons { justify-content: center; }
+    }
+    @media (max-width: 768px) {
+        .container { padding: 0 1rem; }
+        section { padding: 4rem 0; }
+        .section-title { font-size: 1.75rem; }
+        .home-photo { width: 250px; height: 250px; margin-bottom: 1.5rem; }
+        #home h1 { font-size: clamp(2.5rem, 12vw, 3.5rem); }
+        .description { font-size: 1rem; margin: 1.5rem 0 2rem 0; }
+        .footer-content { flex-direction: column; text-align: center; }
+        .project-grid { grid-template-columns: 1fr; }
+    }
+   </style>
+</head>
+<body>
+
+    <header>
+        <nav class="container">
+            <a href="#" class="nav-brand">
+                <img src="/perfil.png" alt="Foto de Juan Coutinho" class="profile-pic">
+                <span>
+                    Juan Coutinho
+                    <svg class="verified-icon" viewBox="0 0 24 24"><path fill="currentColor" d="M10,17L5,12L6.41,10.58L10,14.17L17.59,6.58L19,8M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z"></path></svg>
+                </span>
+            </a>
+            
+            <ul class="nav-links" id="nav-menu">
+                <li><a href="#home"><span>01</span> início</a></li>
+                <li><a href="#projects"><span>02</span> projetos</a></li>
+                <li><a href="#experience"><span>03</span> experiência</a></li>
+                <li><a href="#education"><span>04</span> formação</a></li>
+                <li><a href="#recommendations"><span>05</span> recomendações</a></li>
+            </ul>
+
+            <button class="nav-toggle" id="nav-toggle" aria-label="Abrir menu" aria-controls="nav-menu" aria-expanded="false">
+                <svg class="icon-menu" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M3 6h18v2H3V6zm0 5h18v2H3v-2zm0 5h18v2H3v-2z"></path></svg>
+                <svg class="icon-close" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"></path></svg>
+            </button>
+        </nav>
+    </header>
+
+    <main class="container">
+        <section id="home">
+            <div class="home-text">
+                <div class="reveal-on-scroll">
+                    <p class="pre-title">OLÁ, MEU NOME É JUAN COUTINHO</p>
+                    <h1 class="text-home">Eu crio soluções&nbsp;digitais.</h1>
+                </div>
+                <p class="description reveal-on-scroll">
+                    Sou um desenvolvedor Fullstack apaixonado por transformar ideias em realidade. Com experiência em Ruby on Rails, Python e JavaScript, meu foco é criar soluções robustas, escaláveis e com design intuitivo.
+                </p>
+                <div class="cta-buttons reveal-on-scroll">
+                    <a href="./assets/juan-coutinho-cv.pdf" download class="cta-btn cta-btn-primary">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M5 20h14v-2H5v2zm14-9h-4V3H9v8H5l7 7 7-7z"/></svg>
+                        Baixar Currículo
+                    </a>
+                    <a href="https://github.com/juancoutinhoflooxmongagua" target="_blank" class="cta-btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path></svg>
+                        GitHub
+                    </a>
+                    <a href="https://www.linkedin.com/in/juan-coutinho-dev/" target="_blank" class="cta-btn">
+                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-3.06v8.37h3.06v-4.57c0-1.25.67-2.33 2.47-2.33s1.8 1.08 1.8 2.33v4.57h3.31M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69.93 1.68 1.68 0 0 0 0 1.52c.23.49.71.93 1.24.93h.01zM8.37 18.5h-3.06V10.13h3.06v8.37z"></path></svg>
+                        LinkedIn
+                    </a>
+                </div>
+            </div>
+            <div class="home-photo-container reveal-on-scroll">
+                <img src="/perfil.png" alt="Foto estilizada de Juan Coutinho" class="home-photo">
+            </div>
+        </section>
+
+        <section id="projects">
+            <h2 class="section-title reveal-on-scroll">Projetos em Destaque</h2>
+            
+            <div class="project-grid">
+                <div class="project-card reveal-on-scroll" style="background-image: url('/img/2.jpg');">
+                    <button class="card-view-btn" aria-label="Ver imagem do projeto">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M10 18a7.952 7.952 0 0 0 4.897-1.688l4.396 4.396 1.414-1.414-4.396-4.396A7.952 7.952 0 0 0 18 10c0-4.411-3.589-8-8-8s-8 3.589-8 8 3.589 8 8 8zm0-14c3.309 0 6 2.691 6 6s-2.691 6-6 6-6-2.691-6-6 2.691-6 6-6z"></path><path d="M11.5 9.5H10v-2a.5.5 0 0 0-1 0v2H7.5a.5.5 0 0 0 0 1H9v2a.5.5 0 0 0 1 0v-2h1.5a.5.5 0 0 0 0-1z"></path></svg>
+                    </button>
+                    <div class="card-content">
+                        <h3>Life Balance</h3>
+                        <p class="card-tech">Ruby on Rails & Bootstrap</p>
+                        <p>Landing Page</p>
+                        <div class="card-buttons">
+                            <a href="https://github.com/juancoutinhoflooxmongagua/BookReceitas" target="_blank" class="card-btn">GitHub <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path></svg></a>
+                            <a href="#" target="_blank" class="card-btn">Site <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M10 6a.75.75 0 0 1 .75-.75h2.5a.75.75 0 0 1 0 1.5h-2.5A.75.75 0 0 1 10 6ZM7.75 12a.75.75 0 0 0 0 1.5h8.5a.75.75 0 0 0 0-1.5h-8.5Z M9 17.25a.75.75 0 0 1 .75-.75h6a.75.75 0 0 1 0 1.5h-6a.75.75 0 0 1-.75-.75Z"></path><path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM3.5 12a8.5 8.5 0 1 1 17 0a8.5 8.5 0 0 1-17 0Z"></path></svg></a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="project-card reveal-on-scroll" style="background-image: url('/img/alfred.jpg');">
+                    <button class="card-view-btn" aria-label="Ver imagem do projeto"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M10 18a7.952 7.952 0 0 0 4.897-1.688l4.396 4.396 1.414-1.414-4.396-4.396A7.952 7.952 0 0 0 18 10c0-4.411-3.589-8-8-8s-8 3.589-8 8 3.589 8 8 8zm0-14c3.309 0 6 2.691 6 6s-2.691 6-6 6-6-2.691-6-6 2.691-6 6-6z"></path><path d="M11.5 9.5H10v-2a.5.5 0 0 0-1 0v2H7.5a.5.5 0 0 0 0 1H9v2a.5.5 0 0 0 1 0v-2h1.5a.5.5 0 0 0 0-1z"></path></svg></button>
+                    <div class="card-content">
+                        <h3>Alfred AI - ChatBots</h3>
+                        <p class="card-tech">Ruby on Rails</p>
+                        <p></p>
+                        <div class="card-buttons">
+                            <a href="https://github.com/juancoutinhoflooxmongagua/PokeSouls" target="_blank" class="card-btn">GitHub <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path></svg></a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="project-card reveal-on-scroll" style="background-image: url('/img/5.jpg');">
+                    <button class="card-view-btn" aria-label="Ver imagem do projeto"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M10 18a7.952 7.952 0 0 0 4.897-1.688l4.396 4.396 1.414-1.414-4.396-4.396A7.952 7.952 0 0 0 18 10c0-4.411-3.589-8-8-8s-8 3.589-8 8 3.589 8 8 8zm0-14c3.309 0 6 2.691 6 6s-2.691 6-6 6-6-2.691-6-6 2.691-6 6-6z"></path><path d="M11.5 9.5H10v-2a.5.5 0 0 0-1 0v2H7.5a.5.5 0 0 0 0 1H9v2a.5.5 0 0 0 1 0v-2h1.5a.5.5 0 0 0 0-1z"></path></svg></button>
+                    <div class="card-content">
+                        <h3>Valley</h3>
+                        <p class="card-tech">Ruby on Rails e Tailwind</p>
+                        <p>Trabalho de Conclusão de Curso</p>
+                        <div class="card-buttons">
+                            <a href="https://github.com/juancoutinhoflooxmongagua/Payflow" target="_blank" class="card-btn">GitHub <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path></svg></a>
+                            <a href="#" target="_blank" class="card-btn">Site <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M10 6a.75.75 0 0 1 .75-.75h2.5a.75.75 0 0 1 0 1.5h-2.5A.75.75 0 0 1 10 6ZM7.75 12a.75.75 0 0 0 0 1.5h8.5a.75.75 0 0 0 0-1.5h-8.5Z M9 17.25a.75.75 0 0 1 .75-.75h6a.75.75 0 0 1 0 1.5h-6a.75.75 0 0 1-.75-.75Z"></path><path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM3.5 12a8.5 8.5 0 1 1 17 0a8.5 8.5 0 0 1-17 0Z"></path></svg></a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="project-card reveal-on-scroll" style="background-image: url('/img/1.jpg');">
+                    <button class="card-view-btn" aria-label="Ver imagem do projeto"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M10 18a7.952 7.952 0 0 0 4.897-1.688l4.396 4.396 1.414-1.414-4.396-4.396A7.952 7.952 0 0 0 18 10c0-4.411-3.589-8-8-8s-8 3.589-8 8 3.589 8 8 8zm0-14c3.309 0 6 2.691 6 6s-2.691 6-6 6-6-2.691-6-6 2.691-6 6-6z"></path><path d="M11.5 9.5H10v-2a.5.5 0 0 0-1 0v2H7.5a.5.5 0 0 0 0 1H9v2a.5.5 0 0 0 1 0v-2h1.5a.5.5 0 0 0 0-1z"></path></svg></button>
+                    <div class="card-content">
+                        <h3>Rota Express</h3>
+                        <p class="card-tech">Landing Page HTML & CSS</p>
+                        <div class="card-buttons">
+                            <a href="https://github.com/juancoutinhoflooxmongagua" target="_blank" class="card-btn">GitHub <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path></svg></a>
+                            <a href="https://star-rotaexpress.com/" target="_blank" class="card-btn">Site <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M10 6a.75.75 0 0 1 .75-.75h2.5a.75.75 0 0 1 0 1.5h-2.5A.75.75 0 0 1 10 6ZM7.75 12a.75.75 0 0 0 0 1.5h8.5a.75.75 0 0 0 0-1.5h-8.5Z M9 17.25a.75.75 0 0 1 .75-.75h6a.75.75 0 0 1 0 1.5h-6a.75.75 0 0 1-.75-.75Z"></path><path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM3.5 12a8.5 8.5 0 1 1 17 0a8.5 8.5 0 0 1-17 0Z"></path></svg></a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="project-card reveal-on-scroll" style="background-image: url('/img/4.jpg');">
+                    <button class="card-view-btn" aria-label="Ver imagem do projeto"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M10 18a7.952 7.952 0 0 0 4.897-1.688l4.396 4.396 1.414-1.414-4.396-4.396A7.952 7.952 0 0 0 18 10c0-4.411-3.589-8-8-8s-8 3.589-8 8 3.589 8 8 8zm0-14c3.309 0 6 2.691 6 6s-2.691 6-6 6-6-2.691-6-6 2.691-6 6-6z"></path><path d="M11.5 9.5H10v-2a.5.5 0 0 0-1 0v2H7.5a.5.5 0 0 0 0 1H9v2a.5.5 0 0 0 1 0v-2h1.5a.5.5 0 0 0 0-1z"></path></svg></button>
+                    <div class="card-content">
+                        <h3>Site Informacional</h3>
+                        <p class="card-tech">Html, Css, Js & Tailwind</p>
+                        <div class="card-buttons">
+                            <a href="https://github.com/juancoutinhoflooxmongagua" target="_blank" class="card-btn">GitHub <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path></svg></a>
+                            <a href="#" target="_blank" class="card-btn">Site <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M10 6a.75.75 0 0 1 .75-.75h2.5a.75.75 0 0 1 0 1.5h-2.5A.75.75 0 0 1 10 6ZM7.75 12a.75.75 0 0 0 0 1.5h8.5a.75.75 0 0 0 0-1.5h-8.5Z M9 17.25a.75.75 0 0 1 .75-.75h6a.75.75 0 0 1 0 1.5h-6a.75.75 0 0 1-.75-.75Z"></path><path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM3.5 12a8.5 8.5 0 1 1 17 0a8.5 8.5 0 0 1-17 0Z"></path></svg></a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="project-card reveal-on-scroll" style="background-image: url('/img/3.jpg');">
+                    <button class="card-view-btn" aria-label="Ver imagem do projeto"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M10 18a7.952 7.952 0 0 0 4.897-1.688l4.396 4.396 1.414-1.414-4.396-4.396A7.952 7.952 0 0 0 18 10c0-4.411-3.589-8-8-8s-8 3.589-8 8 3.589 8 8 8zm0-14c3.309 0 6 2.691 6 6s-2.691 6-6 6-6-2.691-6-6 2.691-6 6-6z"></path><path d="M11.5 9.5H10v-2a.5.5 0 0 0-1 0v2H7.5a.5.5 0 0 0 0 1H9v2a.5.5 0 0 0 1 0v-2h1.5a.5.5 0 0 0 0-1z"></path></svg></button>
+                    <div class="card-content">
+                        <h3>ATIS</h3>
+                        <p class="card-tech">Node.js, Express & EJS</p>
+                        <p class="card-tech">Site Voluntário</p>
+                        <p>Landing Page</p>
+                        <div class="card-buttons">
+                            <a href="https://github.com/juancoutinhoflooxmongagua" target="_blank" class="card-btn">GitHub <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path></svg></a>
+                            <a href="#" target="_blank" class="card-btn">Site <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M10 6a.75.75 0 0 1 .75-.75h2.5a.75.75 0 0 1 0 1.5h-2.5A.75.75 0 0 1 10 6ZM7.75 12a.75.75 0 0 0 0 1.5h8.5a.75.75 0 0 0 0-1.5h-8.5Z M9 17.25a.75.75 0 0 1 .75-.75h6a.75.75 0 0 1 0 1.5h-6a.75.75 0 0 1-.75-.75Z"></path><path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM3.5 12a8.5 8.5 0 1 1 17 0a8.5 8.5 0 0 1-17 0Z"></path></svg></a>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <a href="https://github.com/juancoutinhoflooxmongagua" target="_blank" class="see-all reveal-on-scroll">Ver Todos os Projetos no GitHub &rarr;</a>
+        </section>
+
+        <section id="experience">
+            <h2 class="section-title reveal-on-scroll">Histórico de Trabalho</h2>
+            <div class="experience-list">
+                <article class="experience-item reveal-on-scroll"><div class="experience-header"><h3>Desenvolvedor Trainee</h3><p class="experience-meta">Floox AI · Remota</p><p class="experience-dates">Jan 2025 - o momento</p></div><div class="experience-description"><ul><li>Início de um período de imersão e refinamento em Python, e de aprendizado em React e React Native.</li><li>Foco no desenvolvimento de aplicações Web e Mobile para capacitação na empresa.</li><li>Acompanhamento de boas práticas como Git, testes e princípios de Clean Code.</li></ul></div></article>
+                <article class="experience-item reveal-on-scroll"><div class="experience-header"><h3>Desenvolvedor Fullstack</h3><p class="experience-meta">Autônomo · São Paulo, Brasil</p><p class="experience-dates">Ago 2023 - o momento</p></div><div class="experience-description"><ul><li>Desenvolvimento de soluções personalizadas e funcionais para pequenas empresas.</li><li>Aprimoramento constante de senso estético e habilidades técnicas em projetos digitais.</li><li>Criação de produtos que aliam design intuitivo e eficiência prática.</li></ul><div class="experience-techs"><span>HTML</span><span>CSS</span><span>JavaScript</span><span>Ruby on Rails</span></div></div></article>
+                <article class="experience-item reveal-on-scroll"><div class="experience-header"><h3>Líder da Equipe de Desenvolvimento</h3><p class="experience-meta">Autônomo / Projetos · Remota</p><p class="experience-dates">Jul 2024 - Jan 2025</p></div><div class="experience-description"><ul><li>Liderança de projetos Fullstack, unindo design e soluções técnicas para PMEs.</li><li>Experiência com metodologias ágeis (Scrum, Kanban) e tecnologias modernas.</li><li>Entrega de produtos estéticos, funcionais e alinhados às demandas do mercado.</li></ul><div class="experience-techs"><span>Ruby on Rails</span><span>Bootstrap</span><span>PostgreSQL</span><span>JavaScript</span></div></div></article>
+                <article class="experience-item reveal-on-scroll"><div class="experience-header"><h3>Otimizador de SEO e Google ADS (Estágio Voluntário)</h3><p class="experience-meta">Gustavo Biagioni Consultor Imobiliário · Presencial</p><p class="experience-dates">Mai 2023</p></div><div class="experience-description"><ul><li>Otimização de SEO para melhorar o ranqueamento e aumentar a visibilidade online.</li><li>Planejamento e gerenciamento de campanhas no Google Ads.</li><li>Gestão estratégica de mídias sociais para promover engajamento.</li></ul></div></article>
+            </div>
+        </section>
+
+        <section id="education">
+            <h2 class="section-title reveal-on-scroll">Formação e Cursos</h2>
+            <div class="education-grid">
+                <div class="education-column reveal-on-scroll"><h3>Formação Acadêmica</h3><div class="education-item"><h4>Tecnólogo em Análise e Desenvolvimento de Sistemas (ADS)</h4><p class="institution">Universidade Santa Cecília</p><p class="institution">Jul 2025 - Ago 2027</p></div><div class="education-item"><h4>Desenvolvedor de Sistemas (Técnico)</h4><p class="institution">ETEC - Escola Técnica Estadual de São Paulo</p><p class="institution">Fev 2022 - Dez 2024</p><p class="description">Atividades: Basquete & Trabalho de Conclusão de Curso.</p></div></div>
+                <div class="education-column reveal-on-scroll"><h3>Cursos e Certificados</h3><div class="education-item"><h4>Introdução à Linguagem Ruby</h4><p class="institution">DIO · Emitido em Jul 2024</p></div><div class="education-item"><h4>Introdução às OKRs</h4><p class="institution">Qulture.Rocks · Emitido em Abr 2024</p></div><div class="education-item"><h4>Implantação de Serviços de IA em Nuvem - Microsoft AI-900</h4><p class="institution">SENAI · Emitido em Dez 2022</p><p class="credential">Credencial: 20122229841/13545006</p><div class="experience-techs" style="margin-top: 0.75rem;"><span>Azure</span><span>IA</span><span>Machine Learning</span></div></div></div>
+            </div>
+        </section>
+
+        <section id="recommendations">
+            <h2 class="section-title reveal-on-scroll">Recomendações</h2>
+            <div class="recommendation-card reveal-on-scroll">
+                <blockquote>
+                    Juan sempre se mostrou um profissional qualificado e dedicado na área de desenvolvimento de sistemas, demonstrando capacidade técnica em seus projetos e atividades. Em trabalhos que fiz junto com Juan sempre mostrou dedicação e comprometimento. Recomendo ele por ser um profissional muito eficaz e produtivo!
+                </blockquote>
+                <p class="recommendation-author">
+                    Lucas Batista
+                    <span>Desenvolvedor Mobile e Web | React | Flutter</span>
+                </p>
+            </div>
+        </section>
+    </main>
+    
+    <footer id="footer" class="container">
+        <div class="footer-content">
+            <p id="copyright"></p>
+            <p><strong>Trabalho</strong><br><a href="https://github.com/juancoutinhoflooxmongagua" target="_blank">GitHub</a></p>
+            <p><strong>Contato</strong><br><a href="https://www.linkedin.com/in/juan-coutinho-dev/" target="_blank">LinkedIn</a></p>
+            <p><strong>Status</strong><br>Disponível para novos projetos</p>
+        </div>
+    </footer>
+    
+    <a href="#home" id="back-to-top-btn" class="fab" aria-label="Voltar ao topo"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"/><path d="M0 0h24v24H0z" fill="none"/></svg></a>
+    <a href="https://wa.me/5513991823727" target="_blank" id="whatsapp-fab" class="fab" aria-label="Contato por WhatsApp"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M16.6 14c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1-.2.2-.6.7-.8.9-.1.1-.3.2-.5.1-.3-.1-.9-.3-1.8-1.1-.7-.6-1.1-1.4-1.3-1.6-.1-.2 0-.4.1-.5.1-.1.2-.2.4-.4.1-.1.2-.2.2-.4.1-.1.1-.3 0-.4-.1-.1-.6-1.4-.8-1.9-.2-.5-.4-.4-.5-.4h-.4c-.2 0-.4.1-.6.3-.2.2-.8.8-.8 1.9s.8 2.2 1 2.4c.1.1 1.5.9 3.7 2.6 1.5 1.1 2.2 1.5 2.5 1.6.4.2.7.1 1-.1.3-.2.6-.7.8-.9s.3-.2.2-.4c-.1-.1-.2-.2-.4-.3zM12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm0 18c-4.4 0-8-3.6-8-8s3.6-8 8-8 8 3.6 8 8-3.6 8-8 8z"/></svg></a>
+
+    <div id="lightbox" class="lightbox">
+        <span class="lightbox-close">&times;</span>
+        <img id="lightbox-img" src="" alt="Imagem do projeto em tamanho ampliado">
+    </div>
+
+    <script>
+        // --- Scroll Suave com Lenis ---
+        const lenis = new Lenis();
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                lenis.scrollTo(this.getAttribute('href'));
+            });
+        });
+        function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
+        requestAnimationFrame(raf);
+
+        // --- Botão "Voltar ao Topo" ---
+        const backToTopButton = document.querySelector("#back-to-top-btn");
+        window.addEventListener("scroll", () => {
+            backToTopButton.classList.toggle("visible", window.scrollY > 300);
+        });
+
+        // --- Copyright Dinâmico ---
+        const copyright = document.getElementById('copyright');
+        if (copyright) { copyright.innerHTML = `&copy; 2023-${new Date().getFullYear()}<br>Juan Coutinho`; }
+
+        // --- Animação de Revelar ao Rolar ---
+        const revealElements = document.querySelectorAll('.reveal-on-scroll');
+        const revealObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1 });
+        revealElements.forEach(element => { revealObserver.observe(element); });
+
+        // --- Navegação Ativa (ScrollSpy) ---
+        const sections = document.querySelectorAll('main section');
+        const navLinksObserver = document.querySelectorAll('.nav-links a');
+        const navObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const activeId = entry.target.id;
+                    navLinksObserver.forEach(link => {
+                        link.classList.toggle('active', link.getAttribute('href').substring(1) === activeId);
+                    });
+                }
+            });
+        }, { rootMargin: '-50% 0px -50% 0px' });
+        sections.forEach(section => { navObserver.observe(section); });
+
+        // --- Menu Mobile ---
+        const navToggle = document.getElementById('nav-toggle');
+        const navLinksAction = document.querySelectorAll('.nav-links a');
+        const toggleMenu = () => {
+            const isMenuOpen = document.body.classList.toggle('nav-open');
+            navToggle.setAttribute('aria-expanded', isMenuOpen);
+        };
+        const closeMenu = () => {
+            document.body.classList.remove('nav-open');
+            navToggle.setAttribute('aria-expanded', 'false');
+        };
+        if (navToggle) { navToggle.addEventListener('click', toggleMenu); }
+        navLinksAction.forEach(link => { link.addEventListener('click', () => { setTimeout(closeMenu, 250); }); });
+        
+        // --- Lightbox ---
+        const lightbox = document.getElementById('lightbox');
+        const lightboxImg = document.getElementById('lightbox-img');
+        const viewButtons = document.querySelectorAll('.card-view-btn');
+        const closeBtn = document.querySelector('.lightbox-close');
+
+        viewButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const projectCard = button.closest('.project-card');
+                const imageUrl = window.getComputedStyle(projectCard).backgroundImage.slice(5, -2);
+                lightboxImg.src = imageUrl;
+                lightbox.classList.add('visible');
+                document.body.classList.add('lightbox-open');
+            });
+        });
+
+        const closeLightbox = () => {
+            lightbox.classList.remove('visible');
+            document.body.classList.remove('lightbox-open');
+        };
+
+        if(closeBtn) closeBtn.addEventListener('click', closeLightbox);
+        if(lightbox) lightbox.addEventListener('click', (e) => {
+            if (e.target === lightbox) {
+                closeLightbox();
+            }
+        });
+
+    </script>
+
+</body>
+</html>

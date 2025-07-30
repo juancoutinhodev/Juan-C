@@ -1,0 +1,236 @@
+/* --- Configurações Globais e Variáveis --- */
+:root {
+    --bg-dark: #111111;
+    --text-dark: #cccccc;
+    --text-heading-dark: #ffffff;
+    --text-accent-dark: #f06292; /* Um rosa/vermelho para o pre-title */
+    --nav-link-dark: #888888;
+    --nav-active-dark: #ffffff;
+    
+    /* Adicione variáveis para o light mode se precisar */
+
+    --font-serif: 'Playfair Display', serif;
+    --font-sans: 'Inter', sans-serif;
+    --font-mono: 'Roboto Mono', monospace;
+}
+
+body {
+    background-color: var(--bg-dark);
+    color: var(--text-dark);
+    font-family: var(--font-sans);
+    margin: 0;
+    font-size: 16px;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+/* --- Header e Navegação --- */
+header {
+    padding: 2rem 0;
+}
+
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.nav-brand {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.nav-brand a {
+    color: var(--text-heading-dark);
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.profile-pic {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+}
+
+.verified-icon {
+    width: 18px;
+    height: 18px;
+    color: #1DA1F2; /* Cor do ícone de verificação */
+}
+
+.nav-links {
+    list-style: none;
+    display: flex;
+    gap: 2.5rem;
+    margin: 0;
+    padding: 0;
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+}
+
+.nav-links a {
+    color: var(--nav-link-dark);
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.nav-links a:hover,
+.nav-links a.active {
+    color: var(--nav-active-dark);
+}
+
+.nav-links a span {
+    margin-right: 0.5rem;
+}
+
+/* --- Seção Home (Principal) --- */
+#home {
+    padding: 6rem 0;
+}
+
+.pre-title {
+    color: var(--text-accent-dark);
+    font-family: var(--font-sans);
+    font-weight: 700;
+    font-size: 0.9rem;
+    letter-spacing: 1px;
+}
+
+#home h1 {
+    font-family: var(--font-serif);
+    color: var(--text-heading-dark);
+    font-size: clamp(3rem, 10vw, 6rem); /* Fonte responsiva */
+    margin: 0;
+    font-weight: 900;
+    line-height: 1;
+}
+
+.description {
+    font-size: 1.25rem;
+    line-height: 1.6;
+    max-width: 600px; /* Limita a largura do texto */
+    margin-top: 2rem;
+}
+
+/* --- Seção de Posts --- */
+#posts {
+    padding: 4rem 0;
+}
+
+#posts h2 {
+    color: var(--text-heading-dark);
+    font-size: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.post-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+}
+
+.post-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 300px;
+    padding: 1.5rem;
+    border-radius: 8px;
+    background-size: cover;
+    background-position: center;
+    color: white;
+    text-decoration: none;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Overlay escuro para legibilidade */
+.post-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 50%);
+    border-radius: 8px;
+}
+
+.post-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.4);
+}
+
+.card-content {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+}
+
+.card-content h3 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    line-height: 1.2;
+    margin: 0;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.7);
+}
+
+.likes {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.heart-icon {
+    width: 16px;
+    height: 16px;
+}
+
+.see-all {
+    display: inline-block;
+    margin-top: 2rem;
+    color: var(--nav-link-dark);
+    text-decoration: none;
+    font-weight: 500;
+}
+.see-all:hover {
+    color: var(--nav-active-dark);
+}
+
+
+/* --- Footer --- */
+footer {
+    padding: 4rem 0;
+    margin-top: 4rem;
+    border-top: 1px solid #222;
+}
+
+.footer-content {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 2rem;
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+.footer-content p {
+    margin: 0;
+}
+.footer-content strong {
+    color: var(--text-heading-dark);
+}
